@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/websites/{id}/url', function ($id) {
+    return \App\Models\Website::findOrFail($id)->base_url;
+})->name('api.website.url');
+
+Route::get('/websites/{id}', function ($id) {
+    return \App\Models\Website::findOrFail($id);
+})->name('api.website');
+
+Route::get('/websites', function () {
+    return \App\Models\Website::all();
+})->name('api.all_websites');
+
 Route::get('/library/{id}', function ($id) {
     $website = \App\Models\Website::findOrFail($id);
     $content = file_get_contents(('js/uxsad-library.js'));
@@ -27,4 +41,3 @@ Route::get('/library/{id}', function ($id) {
     return response($content)
         ->header('Content-Type', 'application/javascript');
 })->name('get-js');
-
