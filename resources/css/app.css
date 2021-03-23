@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    h1 {
+        @apply font-serif font-bold text-5xl;
+    }
+}
+
+@layer components {
+    table > tbody > tr {
+        @apply border-b border-gray-200 hover:bg-gray-100;
+    }
+
+    table > tbody > tr:nth-child(even) {
+        @apply bg-gray-50 hover:bg-gray-100;
+    }
+
+    table > thead > tr {
+        @apply bg-gray-200 uppercase text-gray-600 text-sm leading-normal;
+    }
+
+    .dropdown {
+        @apply relative;
+    }
+
+    .dropdown-menu {
+        @apply px-2 py-2 bg-white rounded-md shadow absolute right-2 mt-2 origin-top-right rounded-md shadow-lg;
+    }
+
+    .dropdown-menu a {
+        @apply block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 hover:text-gray-900;
+        @apply focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow;
+    }
+
+    .sidebar{
+        @apply flex-grow px-4 pb-4 md:pb-0 md:overflow-y-auto;
+    }
+
+    .sidebar .nav-item{
+        @apply block px-8 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-full hover:text-gray-900;
+        @apply focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow;
+    }
+    .sidebar .nav-item.active {
+        @apply bg-gray-200;
+    }
+}
+

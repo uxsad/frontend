@@ -16,3 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test-login', function(){
+	\Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember=true);
+	return redirect(route('dashboard'));
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
