@@ -30,21 +30,34 @@
         @apply px-2 py-2 bg-white rounded-md shadow absolute right-2 mt-2 origin-top-right rounded-md shadow-lg;
     }
 
+    .sidebar .dropdown-menu {
+        @apply shadow-none p-0 pl-8;
+    }
+
     .dropdown-menu a {
         @apply block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 hover:text-gray-900;
         @apply focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow;
     }
 
-    .sidebar{
+    .sidebar {
         @apply flex-grow px-4 pb-4 md:pb-0 md:overflow-y-auto;
     }
 
-    .sidebar .nav-item{
-        @apply block px-8 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-full hover:text-gray-900;
-        @apply focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow;
+    .sidebar .nav-item {
+        @apply flex px-8 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-full hover:text-gray-900;
+        @apply focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow items-center;
     }
+
     .sidebar .nav-item.active {
         @apply bg-gray-200;
     }
-}
 
+    .sidebar .nav-item .icon {
+        @apply inline-block mr-2;
+        line-height: inherit;
+    }
+
+    .fas {
+        line-height: inherit !important;
+    }
+}

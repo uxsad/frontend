@@ -31,5 +31,6 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<script src="https://kit.fontawesome.com/25f92f4258.js" crossorigin="anonymous"></script>
 </body>
 </html>

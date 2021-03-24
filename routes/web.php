@@ -17,13 +17,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test-login', function(){
-	\Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember=true);
-	return redirect(route('dashboard'));
+Route::get('/test-login', function () {
+    \Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember = true);
+    return redirect(route('dashboard'));
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-require __DIR__.'/auth.php';
+    Route::get('/website/{id}', function ($id) {
+        $website = \App\Models\Website::findOrFail($id);
+        return "This is the page of the website '{$website->name}' (id: {$website->id})";
+    })->name('website');
+});
+
+require __DIR__ . '/auth.php';
