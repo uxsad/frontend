@@ -19,7 +19,7 @@
 <body class="font-sans antialiased">
 <div class="md:flex flex-col md:flex-row min-h-screen w-full">
     @include('layouts.navigation')
-    <div class="w-full md:w-4/5 flex-grow bg-gray-100 py-16 px-8">
+    <div class="w-full md:w-4/5 flex-grow bg-gray-100 py-16 md:px-8">
         <!-- Page Heading -->
         <header class="bg-white sm:rounded-t-lg pt-6 px-4 sm:px-6 lg:px-8">
             {{ $header }}

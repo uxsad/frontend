@@ -8,14 +8,7 @@
         </a>
         <button class="rounded-lg md:hidden rounded-lg focus:outline-none focus:shadow-outline"
                 @click="openSidebar = !openSidebar">
-            <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
-                <path x-show="!openSidebar" fill-rule="evenodd"
-                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z"
-                      clip-rule="evenodd"></path>
-                <path x-show="openSidebar" fill-rule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clip-rule="evenodd"></path>
-            </svg>
+            <span :class="{'fa-times': openSidebar, 'fa-bars': !openSidebar}" class="fas fa-bars fa-lg" aria-label="Open Sidebar"></span>
         </button>
     </div>
 
@@ -27,7 +20,7 @@
             <div class="text-sm font-semibold mt-2">{{Auth::user()->name}}</div>
         </div>
         <div class="dropdown" x-data="{ open: true }">
-            <a href="#" class="nav-item active">
+            <a href="{{route('dashboard.all')}}" class="nav-item active">
                 <span class="icon fas fa-home fa-lg"></span>
                 <span>Dashboard</span>
                 <button @click="open = !open" class="inline-block ml-auto">
@@ -41,8 +34,8 @@
                  x-transition:leave-start="transform opacity-100 scale-100"
                  x-transition:leave-end="transform opacity-0 scale-95"
                  class="dropdown-menu w-full" style="position: relative; margin-top: 0; padding-top: 0;">
-                <a class="nav-item" href="#">My Websites</a>
-                <a class="nav-item" href="#">Shared with me</a>
+                <a class="nav-item" href="{{route('dashboard.mine')}}">My Websites</a>
+                <a class="nav-item" href="{{route('dashboard.shared')}}">Shared with me</a>
             </div>
         </div>
         <a class="nav-item" href="#">

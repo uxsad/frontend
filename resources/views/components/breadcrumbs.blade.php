@@ -3,9 +3,9 @@
         @foreach($path as $segment)
             <li class="flex items-center">
                 @if($loop->last)
-                    <a href="#" class="text-gray-500" aria-current="page">{{$segment}}</a>
+                    <a href="#" class="text-gray-500" aria-current="page">{{$segment->title}}</a>
                 @else
-                    <a href="#">{{$segment}}</a>
+                    <a href="{{$segment->link}}">{{$segment->title}}</a>
                     <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 320 512">
                         <path

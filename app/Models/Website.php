@@ -13,4 +13,14 @@ class Website extends Model
     {
         return $this->hasMany(Page::class);
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function shared_with(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'sharings');
+    }
 }
