@@ -47,7 +47,7 @@ class BreadcrumbsHelper
     {
         return [
             ...self::getDashboardPath($website->owner == Auth::user() ? self::DASHBOARD_MINE : self::DASHBOARD_SHARED),
-            self::breadcrumb($website->name, route('website', $website->id))
+            self::breadcrumb($website->name, route('websites.show', $website->id))
         ];
     }
 

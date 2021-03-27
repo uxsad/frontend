@@ -23,7 +23,7 @@
             </thead>
             <tbody class="text-gray-600 'text-sm font-light">
             @foreach($website->pages as $page)
-                <tr class="cursor-pointer" x-data="{ link: '{{route('page', ['id'=>$page->id])}}' }"
+                <tr class="cursor-pointer" x-data="{ link: '{{route('pages.show', ['page'=>$page->id])}}' }"
                     @click="window.location.href = link">
                     <td class="py-3 px-3 text-left whitespace-nowrap font-medium">{{$page->title}}</td>
                     <td class="py-3 px-3 text-center whitespace-nowrap">

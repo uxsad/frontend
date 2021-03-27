@@ -38,7 +38,7 @@
             </thead>
             <tbody class="text-gray-600 'text-sm font-light">
             @foreach($websites as $website)
-                <tr class="cursor-pointer" x-data="{ link: '{{route('website', ['id'=>$website->id])}}' }"
+                <tr class="cursor-pointer" x-data="{ link: '{{route('websites.show', ['website'=>$website->id])}}' }"
                     @click="window.location.href = link">
                     <td class="py-3 px-3 text-left whitespace-nowrap font-medium">
                         @if($website->owner->id != Auth::user()->id)

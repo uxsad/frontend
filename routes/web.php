@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,26 +25,16 @@ Route::get('/test-login', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('/dashboard')->name('dashboard.')->group(function () {
-        Route::get('/', function () {
-            return view('home', ['type'=>\App\BreadcrumbsHelper::DASHBOARD_ALL,'websites' => [...Auth::user()->websites, ...Auth::user()->shared_with]]);
-        })->name('all');
-        Route::get('/my', function () {
-            return view('home', ['type'=>\App\BreadcrumbsHelper::DASHBOARD_MINE,'websites' => Auth::user()->websites]);
-        })->name('mine');
-        Route::get('/shared', function () {
-            return view('home', ['type'=>\App\BreadcrumbsHelper::DASHBOARD_SHARED,'websites' => Auth::user()->shared_with]);
-        })->name('shared');
-    });
+    Route::prefix('/dashboard')
+        ->name('dashboard.')
+        ->group(function () {
+            Route::get('/', [WebsiteController::class, 'index'])->name('all');
+            Route::get('/my', [WebsiteController::class, 'indexOnlyOfProperty'])->name('mine');
+            Route::get('/shared', [WebsiteController::class, 'indexOnlyShared'])->name('shared');
+        });
+    Route::resource('websites', WebsiteController::class)->except(['index']);
 
-    Route::get('/website/{id}', function ($id) {
-        $website = \App\Models\Website::findOrFail($id);
-        return view('website', ['website' => $website]);
-    })->name('website');
-    Route::get('/page/{id}', function ($id) {
-        $page = \App\Models\Page::findOrFail($id);
-        return view('page', ['page' => $page]);
-    })->name('page');
+    Route::resource('websites.pages', PageController::class)->shallow();
 });
 
 require __DIR__ . '/auth.php';
