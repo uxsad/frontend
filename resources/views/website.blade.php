@@ -5,22 +5,19 @@
         <h1>{{$website->name}}</h1>
         <x-breadcrumbs :path="\App\BreadcrumbsHelper::getWebsitePath($website)"></x-breadcrumbs>
     </div>
-    <div x-data="{open:false}">
-        <button
-            @click="open = !open"
-            class="w-12 h-12 inline-block text-center text-white transition bg-blue-700 rounded-full shadow ripple hover:shadow-lg hover:bg-blue-800 focus:outline-none">
+    <x-modal-dialog variable="open"
+                    btnClass="w-12 h-12 inline-block text-center text-white transition bg-blue-700 rounded-full shadow ripple hover:shadow-lg hover:bg-blue-800 focus:outline-none">
+        <x-slot name="button">
             <span class="fab fa-js fa-lg" aria-label="Get JS Link"></span>
-        </button>
-        <div x-show="open" @click="open=!open"
-             class="h-screen w-screen fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50"
-             style="display: none;">
-            <div @click.stop
-                 class="absolute transform top-2/4 left-2/4 rounded-lg bg-white -translate-x-2/4 -translate-y-2/4 p-6">
-                <h2>Interactions Tracker</h2>
-                <pre>{!! route('get-js', $website->id) !!}</pre>
-            </div>
+        </x-slot>
+
+        <header class="flex flex-row items-center border-b border-gray-200 pb-2">
+            <h2>Interactions Tracker</h2>
+        </header>
+        <div class="pt-6">
+            <pre>{!! route('get-js', $website->id) !!}</pre>
         </div>
-    </div>
+    </x-modal-dialog>
 @endsection
 
 @section('content')

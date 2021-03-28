@@ -18,10 +18,19 @@
         <x-breadcrumbs :path="\App\BreadcrumbsHelper::getDashboardPath($type)"></x-breadcrumbs>
     </div>
     @unless($type == \App\BreadcrumbsHelper::DASHBOARD_SHARED)
-        <button
-            class="w-12 h-12 inline-block text-center text-white transition bg-blue-700 rounded-full shadow ripple hover:shadow-lg hover:bg-blue-800 focus:outline-none">
-            <span class="fas fa-plus fa-lg" aria-label="Add new website"></span>
-        </button>
+        <x-modal-dialog variable="open"
+                        btnClass="w-12 h-12 inline-block text-center text-white transition bg-blue-700 rounded-full shadow ripple hover:shadow-lg hover:bg-blue-800 focus:outline-none">
+            <x-slot name="button">
+                <span class="fas fa-plus fa-lg" aria-label="Add new website"></span>
+            </x-slot>
+
+            <header class="flex flex-row items-center border-b border-gray-200 pb-2">
+                <h2>Add Website</h2>
+            </header>
+            <div class="pt-6">
+                <p>Insert form</p>
+            </div>
+        </x-modal-dialog>
     @endunless
 @endsection
 
