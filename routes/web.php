@@ -19,10 +19,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test-login', function () {
-    \Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember = true);
-    return redirect(route('dashboard.all'));
-});
+if (App::environment('local')) {
+    Route::get('/test-login', function () {
+        \Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember = true);
+        return redirect(route('dashboard.all'));
+    });
+}
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('/dashboard')
