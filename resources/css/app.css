@@ -64,4 +64,25 @@
     .fas, .fab {
         line-height: inherit !important;
     }
+
+    .form label {
+        @apply block;
+    }
+
+    .btn {
+        @apply inline-block px-6 py-2 text-xs font-medium leading-6 text-center uppercase transition rounded;
+        @apply focus:outline-none;
+    }
+
+    .btn-secondary {
+        @apply btn;
+        @apply text-blue-700 bg-transparent border-2 border-blue-700 hover:bg-blue-100;
+        /*ripple*/
+    }
+
+    .btn-primary {
+        @apply btn;
+        @apply text-white bg-blue-700 border-blue-700 border-2 shadow hover:shadow-lg hover:bg-blue-800;
+        /*ripple*/
+    }
 }

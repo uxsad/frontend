@@ -29,6 +29,20 @@
             </header>
             <div class="pt-6">
                 <p>Insert form</p>
+                <form class="form" action="">
+                    <label>
+                        Name
+                        <input type="text" placeholder="e.g.: Google">
+                    </label>
+                    <label>
+                        Base URL
+                        <input type="url" placeholder="e.g.: https://google.com/">
+                    </label>
+                    <div class="text-right mt-6">
+                        <input type="reset" class="btn-secondary" @click="open=!open" value="Cancel" />
+                        <input type="submit" class="btn-primary" value="Add" />
+                    </div>
+                </form>
             </div>
         </x-modal-dialog>
     @endunless
@@ -47,10 +61,10 @@
             </thead>
             <tbody class="text-gray-600 'text-sm font-light">
             @foreach($websites as $website)
-                <tr class="cursor-pointer" x-data="{ link: '{{route('websites.show', ['website'=>$website->id])}}' }"
+                <tr class="cursor-pointer" x-data="{ link: '{{route('websites.show', $website->id)}}' }"
                     @click="window.location.href = link">
                     <td class="py-3 px-3 text-left whitespace-nowrap font-medium">
-                        @if($website->owner->id != Auth::user()->id)
+                        @if($website->owner->id != auth()->id())
                             <small class="mr-2 text-gray-400" aria-label="Shared with me">
                                 <span class="fas fa-user-friends fa-xs"></span>
                             </small>

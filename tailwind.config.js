@@ -8,6 +8,13 @@ module.exports = {
     ],
 
     theme: {
+        minWidth: {
+            '0': '0',
+            '1/4': '25%',
+            '2/4': '50%',
+            '3/4': '75%',
+            'full': '100%',
+        },
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
