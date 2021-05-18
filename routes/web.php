@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/my', [WebsiteController::class, 'indexOnlyOfProperty'])->name('mine');
             Route::get('/shared', [WebsiteController::class, 'indexOnlyShared'])->name('shared');
         });
-    Route::resource('websites', WebsiteController::class)->except(['index']);
+    Route::resource('websites', WebsiteController::class)->except(['index', 'create']);
 
     Route::resource('websites.pages', PageController::class)->shallow();
 });

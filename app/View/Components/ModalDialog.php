@@ -8,16 +8,18 @@ class ModalDialog extends Component
 {
     public string $variable;
     public string $btnClass;
+    public bool $startVisible;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(string $variable = "open", string $btnClass = "")
+    public function __construct(string $variable = "open", string $btnClass = "", string $startVisible = "false")
     {
         $this->variable = $variable;
         $this->btnClass = $btnClass;
+        $this->startVisible = $startVisible == "true" ? true : false;
     }
 
     /**
