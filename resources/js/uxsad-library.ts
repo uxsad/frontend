@@ -1,5 +1,7 @@
 import * as path from 'path';
-import { v4 as uuid } from 'uuid';
+import {v4 as uuid} from 'uuid';
+import axios from 'axios';
+
 export class ScreenCoordinates {
     public x: number;
     public y: number;
@@ -56,106 +58,129 @@ export type CollectedData = {
     };
     image: string; ///< The webcam snapshot as a data URI.
 }
+
 const IDENTIFIER = "%IDENTIFIER%";
 //const UXSAD_URL_CHECK_API = "%UXSAD_URL_CHECK_API%";
 const REAL_URL = new URL("%REAL_URL%");
-if(!window.localStorage.getItem("sid")){
-	console.log("you don't have a user id. I'm generating one...");
-	window.localStorage.setItem("sid", uuid());
+const API_ENDPOINT = "%API_ENDPOINT%";
+const SENDING_INTERVAL = 5; // in seconds
+const toSend: Array<Object> = [];
+
+if (!window.localStorage.getItem("sid")) {
+    console.log("you don't have a user id. I'm generating one...");
+    window.localStorage.setItem("sid", uuid());
 }
 
-function checkUrl():boolean {
-	const thisUrl = new URL(window.location.href);
-	const relative = path.relative(REAL_URL.pathname, thisUrl.pathname);
-	return thisUrl.host === REAL_URL.host &&
-		thisUrl.port === REAL_URL.port &&
-		(relative === "" || !relative.startsWith('..') && !path.isAbsolute(relative));
+function checkUrl(): boolean {
+    const thisUrl = new URL(window.location.href);
+    const relative = path.relative(REAL_URL.pathname, thisUrl.pathname);
+    return thisUrl.host === REAL_URL.host &&
+        thisUrl.port === REAL_URL.port &&
+        (relative === "" || !relative.startsWith('..') && !path.isAbsolute(relative));
 }
 
-document.body.innerHTML += "<p>this is a simple test</p>"+
-	"<p>Your identifier is: " + IDENTIFIER + "</p>"+
-	"<p>Your user id: " + window.localStorage.getItem("sid") + "</p>" +
-	//"<p>Check URL: " + UXSAD_URL_CHECK_API + "</p>"+
-	"<p>Your URL: " + window.location.href + "</p>"+
-	"<p>right url? " + checkUrl() + "</p>";
+document.body.innerHTML += "<p>this is a simple test</p>" +
+    "<p>Your identifier is: " + IDENTIFIER + "</p>" +
+    "<p>Your user id: " + window.localStorage.getItem("sid") + "</p>" +
+    //"<p>Check URL: " + UXSAD_URL_CHECK_API + "</p>"+
+    "<p>Your URL: " + window.location.href + "</p>" +
+    "<p>right url? " + checkUrl() + "</p>";
 
 let keyboard: Set<string> = new Set<string>();
-   let mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
-   let mouseButtons: Set<number> = new Set<number>();
+let mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
+let mouseButtons: Set<number> = new Set<number>();
 
 function relativeScroll(): RawData["scroll"]["relative"] {
-        const height = document.body.offsetHeight;
-        const width = document.body.offsetWidth;
+    const height = document.body.offsetHeight;
+    const width = document.body.offsetWidth;
 
-        const absoluteY = window.pageYOffset;
-        const absoluteX = window.pageXOffset;
+    const absoluteY = window.pageYOffset;
+    const absoluteX = window.pageXOffset;
 
-        const relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
-        const relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
-        return new ScreenCoordinates(relativeX, relativeY);
-    }
-
-function sendCollectionRequest(): void {
-        const objectToSend: RawData = {
-            image: undefined,
-            keyboard: Array.from(keyboard),
-            mouse: {
-                buttons: Array.from(mouseButtons),
-                position: mousePosition
-            },
-            scroll: {
-                absolute: new ScreenCoordinates(window.pageXOffset, window.pageYOffset),
-                relative: relativeScroll()
-            },
-            timestamp: Date.now(),
-            url: window.location.href,
-            window: new ScreenCoordinates(window.innerWidth, window.outerHeight)
-        };
-        messageCollected(objectToSend);
-    }
-
-if(checkUrl()){
-	document.body.innerHTML += "<p style='color:red; text-align:center;'>Execute script here!</p>";
-	window.addEventListener("mousedown", (e: MouseEvent) => {
-                mouseButtons.add(e.button);
-                sendCollectionRequest();
-            });
-            window.addEventListener("mouseup", (e: MouseEvent) => {
-                mouseButtons.delete(e.button);
-                sendCollectionRequest();
-            });
-            window.addEventListener("mousemove", e => {
-                mousePosition.set(e.clientX, e.clientY);
-                sendCollectionRequest();
-            });
-            window.addEventListener("keydown", (e: KeyboardEvent) => {
-                keyboard.add(e.key);
-                sendCollectionRequest();
-            });
-            window.addEventListener("keyup", (e: KeyboardEvent) => {
-                if (!keyboard.delete(e.key)) {
-                    // Error fix: released a key that was pressed
-                    // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
-                    keyboard.clear();
-                }
-                sendCollectionRequest();
-            });
-            window.addEventListener("scroll", (e: Event) => {
-                if (e.target == window) {
-                    //this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
-                    sendCollectionRequest();
-                }
-            });
-            window.addEventListener("resize", (e: UIEvent) => {
-                if (e.target == window) {
-                    sendCollectionRequest();
-                }
-            });
+    const relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
+    const relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
+    return new ScreenCoordinates(relativeX, relativeY);
 }
 
-function messageCollected(obj:any){
-	console.log({
-		...obj,
-		userId: window.localStorage.getItem("sid")
-	});
+function sendCollectionRequest(): void {
+    const objectToSend: RawData = {
+        image: undefined,
+        keyboard: Array.from(keyboard),
+        mouse: {
+            buttons: Array.from(mouseButtons),
+            position: mousePosition
+        },
+        scroll: {
+            absolute: new ScreenCoordinates(window.pageXOffset, window.pageYOffset),
+            relative: relativeScroll()
+        },
+        timestamp: Date.now(),
+        url: window.location.href,
+        window: new ScreenCoordinates(window.innerWidth, window.outerHeight)
+    };
+    messageCollected(objectToSend);
+}
+
+if (checkUrl()) {
+    document.body.innerHTML += "<p style='color:red; text-align:center;'>Execute script here!</p>";
+    window.addEventListener("mousedown", (e: MouseEvent) => {
+        mouseButtons.add(e.button);
+        sendCollectionRequest();
+    });
+    window.addEventListener("mouseup", (e: MouseEvent) => {
+        mouseButtons.delete(e.button);
+        sendCollectionRequest();
+    });
+    window.addEventListener("mousemove", e => {
+        mousePosition.set(e.clientX, e.clientY);
+        sendCollectionRequest();
+    });
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+        keyboard.add(e.key);
+        sendCollectionRequest();
+    });
+    window.addEventListener("keyup", (e: KeyboardEvent) => {
+        if (!keyboard.delete(e.key)) {
+            // Error fix: released a key that was pressed
+            // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
+            keyboard.clear();
+        }
+        sendCollectionRequest();
+    });
+    window.addEventListener("scroll", (e: Event) => {
+        console.log(e.target);
+        if (e.target == window || e.target == document) {
+            //this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
+            sendCollectionRequest();
+        }
+    });
+    window.addEventListener("resize", (e: UIEvent) => {
+        if (e.target == window) {
+            sendCollectionRequest();
+        }
+    });
+
+    setInterval(sendData, SENDING_INTERVAL * 1000);
+}
+
+function messageCollected(obj: any) {
+    toSend.push({
+        ...obj,
+        userId: window.localStorage.getItem("sid"),
+        websiteId: IDENTIFIER,
+        pageTitle: document.title
+    });
+    console.log("collected", toSend);
+}
+
+async function sendData() {
+    try {
+        const results = await axios.post(API_ENDPOINT, {'data':toSend}
+        );
+        toSend.length = 0;
+        console.warn("done", results);
+    } catch (error) {
+        console.error(error);
+        console.log(error.response);
+    }
 }

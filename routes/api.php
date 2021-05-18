@@ -32,12 +32,15 @@ Route::get('/websites', function () {
     return \App\Models\Website::all();
 })->name('api.all_websites');
 
+Route::post('/websites/add', [\App\Http\Controllers\EmotionController::class, 'analyzeInteractions'])->name('api.add_interactions_data');
+
 Route::get('/library/{id}', function ($id) {
     $website = \App\Models\Website::findOrFail($id);
     $content = file_get_contents(('js/uxsad-library.js'));
     $content = preg_replace('/%IDENTIFIER%/', $id, $content, 1);
     //$content = preg_replace('/%UXSAD_URL_CHECK_API%/', route('api.website.url', $id), $content, 1);
     $content = preg_replace('/%REAL_URL%/', $website->base_url, $content, 1);
+    $content = preg_replace('/%API_ENDPOINT%/', route("api.add_interactions_data"), $content, 1);
     return response($content)
         ->header('Content-Type', 'application/javascript');
 })->name('get-js');

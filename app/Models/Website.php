@@ -23,4 +23,9 @@ class Website extends Model
     {
         return $this->belongsToMany(User::class, 'sharings');
     }
+
+    public function emotions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Emotion::class, Page::class);
+    }
 }
