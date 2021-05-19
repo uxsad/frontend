@@ -29,7 +29,10 @@ export type RawData = {
         absolute: ScreenCoordinates; ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
         relative: ScreenCoordinates; ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     };
-    window: ScreenCoordinates; ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    window: {
+        screen: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+        document: ScreenCoordinates, ///< Various data about the browser's document. w[0] is the width, w[1] is the height.
+    };
     keyboard: Array<string>; ///< An array of keys that's currently pressed
 }
 export type CollectedData = {
@@ -79,13 +82,6 @@ function checkUrl(): boolean {
         (relative === "" || !relative.startsWith('..') && !path.isAbsolute(relative));
 }
 
-document.body.innerHTML += "<p>this is a simple test</p>" +
-    "<p>Your identifier is: " + IDENTIFIER + "</p>" +
-    "<p>Your user id: " + window.localStorage.getItem("sid") + "</p>" +
-    //"<p>Check URL: " + UXSAD_URL_CHECK_API + "</p>"+
-    "<p>Your URL: " + window.location.href + "</p>" +
-    "<p>right url? " + checkUrl() + "</p>";
-
 let keyboard: Set<string> = new Set<string>();
 let mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
 let mouseButtons: Set<number> = new Set<number>();
@@ -116,7 +112,10 @@ function sendCollectionRequest(): void {
         },
         timestamp: Date.now(),
         url: window.location.href,
-        window: new ScreenCoordinates(window.innerWidth, window.outerHeight)
+        window: {
+            screen: new ScreenCoordinates(window.innerWidth, window.outerHeight),
+            document: new ScreenCoordinates(document.documentElement.offsetWidth, document.documentElement.offsetHeight)
+        }
     };
     messageCollected(objectToSend);
 }
@@ -132,7 +131,7 @@ if (checkUrl()) {
         sendCollectionRequest();
     });
     window.addEventListener("mousemove", e => {
-        mousePosition.set(e.clientX, e.clientY);
+        mousePosition.set(e.pageX, e.pageY);
         sendCollectionRequest();
     });
     window.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -148,7 +147,6 @@ if (checkUrl()) {
         sendCollectionRequest();
     });
     window.addEventListener("scroll", (e: Event) => {
-        console.log(e.target);
         if (e.target == window || e.target == document) {
             //this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
             sendCollectionRequest();
@@ -174,9 +172,13 @@ function messageCollected(obj: any) {
 }
 
 async function sendData() {
+    if (toSend.length === 0) {
+        console.log("nothing to do");
+        return;
+    }
+
     try {
-        const results = await axios.post(API_ENDPOINT, {'data':toSend}
-        );
+        const results = await axios.post(API_ENDPOINT, {'data': toSend});
         toSend.length = 0;
         console.warn("done", results);
     } catch (error) {

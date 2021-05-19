@@ -25,8 +25,8 @@ class EmotionController extends Controller
                 'website_id' => $interaction['websiteId'],
                 'title' => $interaction['pageTitle'],
             ])->id;
-            $emotion->x = $interaction['scroll']['relative']['x'];
-            $emotion->y = $interaction['scroll']['relative']['y'];
+            $emotion->x = 100 * $interaction['mouse']['position']['x'] / $interaction['window']['document']['x'];
+            $emotion->y = 100 * $interaction['mouse']['position']['y'] / $interaction['window']['document']['y'];
             $emotion->anger = rand(0, 2);
             $emotion->contempt = rand(0, 2);
             $emotion->disgust = rand(0, 2);
