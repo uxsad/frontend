@@ -19,7 +19,7 @@ window.Heatmap = class {
             const z = this.emotionValues[emotion];
             const finalZ = this.y.map(yval => this.x.map(xval => {
                 let el = z.find(zval => zval['x'] === xval && zval['y'] === yval)
-                return el === undefined ? null : el['emotion'];
+                return el === undefined ? 0 : el['emotion'] + 1;
             }));
             const data = [{
                 z: finalZ,
@@ -29,7 +29,7 @@ window.Heatmap = class {
                 contours: {
                     coloring: 'heatmap',
                     start: 0,
-                    end: 2,
+                    end: 3,
                     size: 0.25
                 },
                 line: {
