@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 if (App::environment('local')) {
     Route::get('/test-login', function () {
-        \Illuminate\Support\Facades\Auth::login(\App\Models\User::all()->random(), $remember = true);
+        \Illuminate\Support\Facades\Auth::login(\App\Models\Page::where('title', 'Andrea Esposito | Andrea Esposito’s website and blog.')->first()->website->owner, $remember = true);
         return redirect(route('dashboard.all'));
     });
 }
