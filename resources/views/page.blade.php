@@ -42,6 +42,14 @@
                 <input name="emotion" type="radio" id="surprise" value="surprise"/>
                 <label for="surprise">Surprise</label>
             </div>
+            <div>
+                <input name="emotion" type="radio" id="valence" value="valence"/>
+                <label for="valence">Valence</label>
+            </div>
+            <div>
+                <input name="emotion" type="radio" id="engagement" value="engagement"/>
+                <label for="engagement">Engagement</label>
+            </div>
         </div>
         <div class="w-full md:w-4/5 relative">
             <div id="heatmap-container" class="relative mr-8 h-full w-full"></div>
@@ -66,7 +74,37 @@
         const y = @json($page->emotions()->select('y')->distinct()->orderBy('y', 'asc')->get()->pluck('y'));
         const x = @json($page->emotions()->select('x')->distinct()->orderBy('x', 'asc')->get()->pluck('x'));
 
-        const heatmap = new Heatmap('heatmap-container', y, x, emotion_values, "{{$page->base64_screenshot}}");
+        const discretize = (values, n = 3, negative = false) => {
+            if (values === undefined || values === null)
+                return null
+            let bins = [];
+            for (let i = 1; i <= n; i++) {
+                bins.push({
+                    index: i - 1,
+                    min: (100 / n) * (i - 1),
+                    max: (100 / n) * i
+                })
+            }
+            if (negative) {
+                bins = [bins.map(b => {
+                    return {
+                        index: -b.index,
+                        min: -b.max,
+                        max: -b.min
+                    }
+                }), ...bins]
+            }
+            bins[0].min = -Infinity;
+            bins[bins.length - 1] = Infinity;
+            return values.map(v => bins.filter(b => b.min < v.emotion && v.emotion < b.max)[0].index);
+        }
+
+        const discretized_emotions = {};
+        Object.keys(emotion_values).forEach(key => {
+            discretized_emotions[key] = discretize(emotion_values[key], 3, key === "valence");
+        });
+
+        const heatmap = new Heatmap('heatmap-container', y, x, discretized_emotions, "{{$page->base64_screenshot}}");
         $(document).ready(function () {
             heatmap.draw($("input[name='emotion']:checked").val());
             $("input[name='emotion']").change(function () {

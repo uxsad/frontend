@@ -7,6 +7,7 @@ use App\Models\Emotion;
 use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class EmotionController extends Controller
 {
@@ -15,8 +16,51 @@ class EmotionController extends Controller
         $validated = $request->validated();
 
         // TODO: Analyze the data instead of returning random values!
+        $emotion_request = array_map(function ($e) {
+            $btns = $e['mouse']['buttons'];
+            $keys = array_map(function ($k) {
+                $key = preg_replace('/[\u0300-\u036f]/', '', \Normalizer::normalize($k, \Normalizer::FORM_D));
 
-        foreach ($validated['data'] as $interaction) {
+                // The following 'if's will fail if the key's length not equal to 1
+                if (preg_match('/^[a-zA-Z]$/i', $key) !== false) {
+                    return 'alpha';
+                } else if (preg_match('/^[0-9]$/', $key) !== false) {
+                    return 'num';
+                } else if (preg_match('/^[|\\\\!"£$%&/()=?^\'-_.:,;#@+*\[\]]$/', $key) !== false) {
+                    return 'symb';
+                } else {
+                    return 'fn';
+                }
+            }, $e['keyboard']);
+            return [
+                "mouse" => [
+                    "position" => $e['mouse']['position'],
+                    "buttons" => [
+                        "left" => in_array(0, $btns),
+                        "middle" => in_array(1, $btns),
+                        "right" => in_array(2, $btns),
+                        "others" => sizeof(array_filter($btns, function ($b) {
+                            return $b > 2;
+                        }))
+                    ]
+                ],
+                "scroll" => $e['scroll'],
+                "keyboard" => [
+                    "alpha" => in_array('alpha', $keys),
+                    "numeric" => in_array('num', $keys),
+                    "symbol" => in_array('symb', $keys),
+                    "function" => in_array('fn', $keys)
+                ],
+                "user_id" => $e["userId"],
+                "url" => $e["url"]
+            ];
+        }, $validated['data']);
+
+        $emotion_response = Http::post("http://127.0.0.1:8000/classify", $emotion_request);
+        assert($emotion_response->status() == 200);
+
+        foreach ($validated['data'] as $key => $interaction) {
+            $data = $emotion_response[$key];
             $emotion = new Emotion();
             $emotion->timestamp = Carbon::createFromTimestampMs($interaction['timestamp'])->toDateTimeString();
             $emotion->page_id = Page::firstOrCreate([
@@ -27,15 +71,15 @@ class EmotionController extends Controller
             ])->id;
             $emotion->x = 100 * $interaction['mouse']['position']['x'] / $interaction['window']['document']['x'];
             $emotion->y = 100 * $interaction['mouse']['position']['y'] / $interaction['window']['document']['y'];
-            $emotion->anger = rand(0, 2);
-            $emotion->contempt = rand(0, 2);
-            $emotion->disgust = rand(0, 2);
-            $emotion->fear = rand(0, 2);
-            $emotion->joy = rand(0, 2);
-            $emotion->sadness = rand(0, 2);
-            $emotion->surprise = rand(0, 2);
-            $emotion->valence = rand(0, 2);
-            $emotion->engagement = rand(0, 2);
+            $emotion->anger = $data['anger'];
+            $emotion->contempt = $data['contempt'];
+            $emotion->disgust = $data['disgust'];
+            $emotion->fear = $data['fear'];
+            $emotion->joy = $data['joy'];
+            $emotion->sadness = $data['sadness'];
+            $emotion->surprise = $data['surprise'];
+            $emotion->valence = $data['valence'];
+            $emotion->engagement = $data['engagement'];
             $emotion->save();
         }
 

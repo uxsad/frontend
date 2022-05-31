@@ -24,8 +24,8 @@ class SendingInteractionsRequest extends FormRequest
     public function rules()
     {
         return [
-            "data.*.keyboard.*" => 'present|string',
-            "data.*.mouse.buttons.*" => 'present|numeric',
+            "data.*.keyboard" => 'present',
+            "data.*.mouse.buttons" => 'present',
             "data.*.mouse.position.x" => 'required|numeric',
             "data.*.mouse.position.y" => 'required|numeric',
             'data.*.scroll.absolute.x' => 'required|numeric',
