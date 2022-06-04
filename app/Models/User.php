@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Website::class);
     }
+
+    public function shared_with(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Website::class, 'sharings');
+    }
 }

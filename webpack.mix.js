@@ -12,22 +12,26 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    .js('resources/js/heatmap.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
-        //
+        require('postcss-import'),
+        require('tailwindcss'),
+        ...(mix.inProduction() ? [require('postcss-purgecss-laravel')({})] : []),
+        require('autoprefixer'),
     ])
-	.webpackConfig({
-		module: {
-			rules: [
-				{
-					test: /\.tsx?$/,
-					loader: "ts-loader",
-					exclude: /node_modules/
-				}
-			]
-		},
-		resolve: {
-			fallback: { "path": require.resolve("path-browserify") },
-			extensions: ["*", ".js", ".jsx", ".vue", ".ts", ".tsx"]
-		}
-	})
-	.js('resources/js/uxsad-library.ts', 'public/js');
+    .webpackConfig({
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: "ts-loader",
+                    exclude: /node_modules/
+                }
+            ]
+        },
+        resolve: {
+            fallback: {"path": require.resolve("path-browserify")},
+            extensions: ["*", ".js", ".jsx", ".vue", ".ts", ".tsx"]
+        }
+    })
+    .js('resources/js/uxsad-library.ts', 'public/js');

@@ -23,7 +23,7 @@ class WebsiteFactory extends Factory
     public function definition(): array
     {
         return [
-            'base_url' => $this->faker->url,
+            'base_url' => $this->faker->unique()->url,
             'name' => $this->faker->words(3, true)
         ];
     }

@@ -1,0 +1,40 @@
+#+TITLE: UX-SAD Visualization Frontend
+#+AUTHOR: Andrea Esposito
+
+* Preface
+This README file is written in OrgMode. As such, all the provided commands use paths relative to the directory of this file to allow the execution of the code blocks directly (in GNU Emacs, using =C-c C-c=).
+* Developing
+** Installing the Dependencies
+The development relies on Docker and [[https://laravel.com/docs/8.x/sail][Laravel Sail]]. To install Docker, use your preferred installation method. Then run the following commands in the repository's directory to install all the required dependencies.
+#+begin_src shell :results output :exports code
+# Install PHP depencies
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/opt \
+    -w /opt \
+    laravelsail/php74-composer:latest \
+    composer install --ignore-platform-reqs
+# Publish docker-compose.yml to the root of the repository
+./vendor/bin/sail artisan sail:install
+# Install JS dependencies
+./vendor/bin/sail npm install
+#+end_src
+
+#+RESULTS:
+
+** Starting the Application
+On Linux, we can start the service and all its requirements using [[https://laravel.com/docs/8.x/sail][Laravel Sail]]. The application will then be available at http://localhost
+#+begin_src shell :results output :exports code
+./vendor/bin/sail up -d
+#+end_src
+
+#+RESULTS:
+
+** Stopping the Application
+
+To stop the background processes and the application, it suffices to run the following command.
+#+begin_src shell :results output :exports code
+./vendor/bin/sail down
+#+end_src
+
+#+RESULTS:
