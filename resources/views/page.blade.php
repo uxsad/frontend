@@ -80,13 +80,13 @@
             let bins = [];
             for (let i = 1; i <= n; i++) {
                 bins.push({
-                    index: i - 1,
+                    index: i,
                     min: (100 / n) * (i - 1),
                     max: (100 / n) * i
                 })
             }
             if (negative) {
-                bins = [bins.map(b => {
+                bins = [...bins.slice().reverse().map(b => {
                     return {
                         index: -b.index,
                         min: -b.max,
@@ -95,8 +95,8 @@
                 }), ...bins]
             }
             bins[0].min = -Infinity;
-            bins[bins.length - 1] = Infinity;
-            return values.map(v => bins.filter(b => b.min < v.emotion && v.emotion < b.max)[0].index);
+            bins[bins.length - 1].max = Infinity;
+	    return values.map(v => bins.filter(b => b.min <= v.emotion && v.emotion <= b.max)[0].index);
         }
 
         const discretized_emotions = {};
