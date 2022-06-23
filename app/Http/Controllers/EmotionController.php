@@ -15,6 +15,15 @@ class EmotionController extends Controller
     {
         $validated = $request->validated();
 
+	$get_url = function($url) {
+		$parsed = parse_url($url);
+		if(array_key_exists('port', $parsed)){
+			return $parsed['scheme'] . '://' . $parsed['host'] . ':' . $parsed['port'] . $parsed['path'];
+		} else {
+			return $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'];
+		}
+	};
+
         // TODO: Analyze the data instead of returning random values!
         $emotion_request = array_map(function ($e) {
             $btns = $e['mouse']['buttons'];
@@ -64,7 +73,7 @@ class EmotionController extends Controller
             $emotion = new Emotion();
             $emotion->timestamp = Carbon::createFromTimestampMs($interaction['timestamp'])->toDateTimeString();
             $emotion->page_id = Page::firstOrCreate([
-                'url' => $interaction['url']
+                'url' => $get_url($interaction['url'])
             ], [
                 'website_id' => $interaction['websiteId'],
                 'title' => $interaction['pageTitle'],
