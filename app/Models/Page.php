@@ -22,13 +22,19 @@ class Page extends Model
         return $this->hasMany(Emotion::class);
     }
 
-    public function getScreenshotAttribute(): string
+    public function getScreenshotAttribute($screenshot): string
     {
-        return Browsershot::url($this->url)
+        if($this->update_at->getTimestamp() > Carbon::now()->subDays(30)){
+	    return $screenshot;
+        }
+        $new_screenshot = Browsershot::url($this->url)
             ->noSandbox()
             ->windowSize(1920, 1080)
             ->fullPage()
             ->screenshot();
+            $this->screenshot = $new_screenshot;
+            $this->save();
+            return $new_screenshot;
     }
 
     public function getBase64ScreenshotAttribute(): string
