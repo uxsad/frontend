@@ -36,5 +36,15 @@ class AppServiceProvider extends ServiceProvider
             preg_match("/<!-- $marker start -->\n(.*)\n<!-- $marker end -->/s", $readme, $match);
             return $match[1];
         });
+
+        Blade::directive('version', function () {
+            $git_ref = base_path('.git/refs/heads/main');
+            if (!file_exists($git_ref))
+                return "no version";
+
+            $hash = file_get_contents($git_ref);
+            $short_hash = substr($hash, 0, 7);
+            return "<a href='https://github.com/uxsad/frontend/tree/${hash}' target='_blank'>${short_hash}</a>";
+        });
     }
 }

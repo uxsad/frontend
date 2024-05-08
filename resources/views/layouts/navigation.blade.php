@@ -47,4 +47,5 @@
             More
         </a>
     </nav>
+    @include('components.footer')
 </div>
