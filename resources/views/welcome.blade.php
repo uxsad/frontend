@@ -76,11 +76,7 @@
     </section>
     <section id="publications" class="container py-5">
         <h2 class="font-serif font-weight-bold">Publications on SERENE</h2>
-        <?php
-        $readme = file_get_contents("https://raw.githubusercontent.com/uxsad/.github/main/profile/README.md");
-        preg_match("/<!-- publications start -->\n(.*)\n<!-- publications end -->/s", $readme, $match);
-        echo $match[1];
-        ?>
+        @publications
     </section>
 </main>
 </body>
