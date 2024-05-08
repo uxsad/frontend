@@ -38,14 +38,14 @@
                 <a class="nav-item" href="{{route('dashboard.shared')}}">Shared with me</a>
             </div>
         </div>
-        <a class="nav-item" href="#">
-            <span class="icon fas fa-cog fa-lg"></span>
-            Settings
-        </a>
-        <a class="nav-item" href="#">
-            <span class="icon fas fa-ellipsis-h fa-lg"></span>
-            More
-        </a>
+{{--        <a class="nav-item" href="#">--}}
+{{--            <span class="icon fas fa-cog fa-lg"></span>--}}
+{{--            Settings--}}
+{{--        </a>--}}
+{{--        <a class="nav-item" href="#">--}}
+{{--            <span class="icon fas fa-ellipsis-h fa-lg"></span>--}}
+{{--            More--}}
+{{--        </a>--}}
     </nav>
     @include('components.footer')
 </div>
