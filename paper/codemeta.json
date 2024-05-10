@@ -1,0 +1,17 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/uxsad/frontend",
+  "datePublished": "2024-05-10",
+  "dateModified": "2024-05-10",
+  "dateCreated": "2024-05-10",
+  "description": "SERENE, the semi-automatic UX-Smell detector",
+  "keywords": "affective computing, ux smell, usability, evaluation",
+  "license": "GPL v3.0",
+  "title": "SERENE",
+  "version": ""
+}
